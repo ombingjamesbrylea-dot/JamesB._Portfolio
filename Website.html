@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Management System</title>
+    <style>
+       * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #2e004f 0%, #4b0073 100%);
+    min-height: 100vh;
+    padding: 20px;
+    color: #f0e6ff;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.top-back-button {
+    display: inline-flex;
+    align-items: center;
+    background: #6a00cc;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 30px;
+    cursor: pointer;
+    border: none;
+}
+
+.top-back-button:hover {
+    transform: translateX(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
+
+.top-back-button::before {
+    content: "←";
+    margin-right: 10px;
+    font-size: 20px;
+}
+
+.header {
+    text-align: center;
+    color: #f0e6ff;
+    margin-bottom: 40px;
+}
+
+.header h1 {
+    font-size: 42px;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.header p {
+    font-size: 18px;
+    opacity: 0.9;
+}
+
+/* Project List View */
+.project-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.project-card {
+    background: #3a005a;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    color: #f0e6ff;
+}
+
+.project-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.7);
+}
+
+.project-card-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.project-card-content {
+    padding: 20px;
+}
+
+.project-card-title {
+    font-size: 22px;
+    color: #d3b3ff;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.project-card-description {
+    color: #e0d4ff;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.project-status {
+    display: inline-block;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.status-active {
+    background:  #6a00cc; 
+    color: #fff;
+}
+
+.status-pending {
+    background: #9a33ff;
+    color: #fff;
+}
+
+.status-completed {
+    background: #4b0073;
+    color: #fff;
+}
+
+.view-btn {
+    width: 100%;
+    padding: 12px;
+    background: #6a00cc;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.view-btn:hover {
+    background: #5200a0;
+}
+
+/* Project Detail View */
+.project-detail {
+    display: none;
+    background:  #3a005a;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    color: #f0e6ff;
+}
+
+.project-detail.active {
+    display: block;
+}
+
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    background: #6a00cc;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 30px;
+    cursor: pointer;
+    border: none;
+}
+
+.back-button:hover {
+    transform: translateX(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
+
+.back-button::before {
+    content: "←";
+    margin-right: 10px;
+    font-size: 20px;
+}
+
+.detail-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 3px solid #6a00cc;
+}
+
+.detail-icon {
+    font-size: 50px;
+    margin-right: 20px;
+}
+
+.detail-title {
+    flex: 1;
+}
+
+.detail-title h2 {
+    font-size: 36px;
+    color: #d3b3ff;
+    margin-bottom: 10px;
+}
+
+.detail-main-image {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    position: relative;
+}
+.detail-main-image::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(46, 0, 79, 0.3);
+    border-radius: 15px;
+}
+
+.detail-info {
+    margin-bottom: 30px;
+}
+
+.info-section {
+    margin-bottom: 25px;
+}
+
+.info-section h3 {
+    color: #d3b3ff;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.info-section p {
+    color: #e0d4ff;
+    font-size: 16px;
+    line-height: 1.8;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.info-box {
+    background: #4b0073;
+    padding: 20px;
+    border-radius: 10px;
+    border-left: 4px solid #6a00cc;
+}
+
+.info-box-label {
+    font-size: 12px;
+    color: #cbbfff;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+
+.info-box-value {
+    font-size: 18px;
+    color: #f0e6ff;
+    font-weight: bold;
+}
+
+.image-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.gallery-item {
+    position: relative;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    transition: transform 0.3s ease;
+}
+
+.gallery-item:hover {
+    transform: scale(1.05);
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    display: block;
+}
+
+.gallery-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 10px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.hidden {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .header h1 {
+        font-size: 28px;
+    }
+
+    .project-list {
+        grid-template-columns: 1fr;
+    }
+
+    .detail-title h2 {
+        font-size: 24px;
+    }
+
+    .detail-main-image {
+        height: 250px;
+    }
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Back button at the top -->
+        <button class="top-back-button" onclick="goBackToLatestProjects()">Back to Latest Projects</button>
+
+        <div class="header">
+            <h1>📋 Project Management System</h1>
+            <p>Manage and track all your projects in one place</p>
+        </div>
+
+        <!-- Project List View -->
+        <div id="projectListView">
+            <div class="project-list" id="projectList"></div>
+        </div>
+
+        <!-- Project Detail View -->
+        <div id="projectDetailView" class="project-detail">
+            <button class="back-button" onclick="showProjectList()">Back to Projects</button>
+            <div id="projectDetailContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // Sample project data
+        const projects = [
+            {
+                id: 1,
+                title: "Arduino IoT Project",
+                icon: "🔌",
+                description: "Innovative IoT project using Arduino for real-time sensor monitoring and data collection.",
+                status: "active",
+                statusText: "Active",
+                mainImage: "https://images.unsplash.com/photo-1553406830-ef2513450d76?w=800&h=500&fit=crop",
+                client: "Tech Solutions Inc.",
+                startDate: "January 2024",
+                duration: "6 months",
+                budget: "$15,000",
+                team: "5 members",
+                fullDescription: "This innovative IoT project utilizes Arduino microcontrollers for real-time sensor monitoring and data collection. The system features automated controls, cloud integration, and a responsive dashboard for monitoring environmental conditions. Perfect for smart home applications and industrial automation.",
+                technologies: "Arduino, IoT, Cloud Integration, Sensors",
+                images: [
+                    { url: "https://images.unsplash.com/photo-1553406830-ef2513450d76?w=400&h=300&fit=crop", label: "Arduino Board & Circuits" },
+                    { url: "https://images.unsplash.com/photo-1608564697071-ddf911d81370?w=400&h=300&fit=crop", label: "Electronic Components" },
+                    { url: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&h=300&fit=crop", label: "Circuit Technology" },
+                    { url: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=400&h=300&fit=crop", label: "IoT Integration" }
+                ]
+            },
+            {
+                id: 2,
+                title: "Web Development Platform",
+                icon: "💻",
+                description: "Modern web application with responsive design and cloud deployment.",
+                status: "completed",
+                statusText: "Completed",
+                mainImage: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&h=500&fit=crop",
+                client: "Digital Agency Co.",
+                startDate: "October 2023",
+                duration: "4 months",
+                budget: "$25,000",
+                team: "8 members",
+                fullDescription: "A comprehensive web development platform featuring modern UI/UX design, responsive layouts, and seamless cloud deployment. Built with cutting-edge technologies to ensure scalability, performance, and user satisfaction. Includes admin dashboard, user management, and analytics.",
+                technologies: "React, Node.js, MongoDB, AWS",
+                images: [
+                    { url: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&h=300&fit=crop", label: "Development Workspace" },
+                    { url: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&h=300&fit=crop", label: "Coding Interface" },
+                    { url: "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?w=400&h=300&fit=crop", label: "Team Collaboration" },
+                    { url: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=300&fit=crop", label: "Final Product" }
+                ]
+            },
+            {
+                id: 3,
+                title: "Mobile App Development",
+                icon: "📱",
+                description: "Cross-platform mobile application with native performance and cloud sync.",
+                status: "active",
+                statusText: "Active",
+                mainImage: "https://images.unsplash.com/photo-1551650975-87deedd944c3?w=800&h=500&fit=crop",
+                client: "StartUp Ventures",
+                startDate: "March 2024",
+                duration: "8 months",
+                budget: "$35,000",
+                team: "6 members",
+                fullDescription: "Cross-platform mobile application development using React Native. Features include real-time synchronization, offline mode, push notifications, and seamless user experience across iOS and Android devices. Integrated with cloud services for data backup and multi-device sync.",
+                technologies: "React Native, Firebase, Redux",
+                images: [
+                    { url: "https://images.unsplash.com/photo-1551650975-87deedd944c3?w=400&h=300&fit=crop", label: "Mobile Interface" },
+                    { url: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&h=300&fit=crop", label: "App Design" },
+                    { url: "https://images.unsplash.com/photo-1556656793-08538906a9f8?w=400&h=300&fit=crop", label: "User Testing" },
+                    { url: "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=400&h=300&fit=crop", label: "Deployment" }
+                ]
+            },
+            {
+                id: 4,
+                title: "AI Machine Learning System",
+                icon: "🤖",
+                description: "Advanced machine learning system for predictive analytics and automation.",
+                status: "pending",
+                statusText: "Pending",
+                mainImage: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=500&fit=crop",
+                client: "AI Research Labs",
+                startDate: "May 2024",
+                duration: "12 months",
+                budget: "$50,000",
+                team: "10 members",
+                fullDescription: "State-of-the-art machine learning system designed for predictive analytics, pattern recognition, and process automation. Utilizes deep learning algorithms and neural networks to provide accurate predictions and insights. Includes data visualization tools and API integration.",
+                technologies: "Python, TensorFlow, Scikit-learn, Keras",
+                images: [
+                    { url: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&h=300&fit=crop", label: "AI Development" },
+                    { url: "https://images.unsplash.com/photo-1555255707-c07966088b7b?w=400&h=300&fit=crop", label: "Data Analysis" },
+                    { url: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&h=300&fit=crop", label: "Algorithm Testing" },
+                    { url: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=400&h=300&fit=crop", label: "Neural Networks" }
+                ]
+            }
+        ];
+
+        // Function to go back to Latest Projects page
+        function goBackToLatestProjects() {
+            // Check if there's history to go back to
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                // If no history, redirect to Latest Projects page
+                // CHANGE THIS to your actual Latest Projects page URL:
+                window.location.href = 'index.html'; // Change 'index.html' to your Latest Projects filename
+            }
+        }
+
+        // Render project list
+        function renderProjectList() {
+            const projectList = document.getElementById('projectList');
+            projectList.innerHTML = projects.map(project => `
+                <div class="project-card" onclick="showProjectDetail(${project.id})">
+                    <img src="${project.mainImage}" alt="${project.title}" class="project-card-image">
+                    <div class="project-card-content">
+                        <h3 class="project-card-title">${project.icon} ${project.title}</h3>
+                        <span class="project-status status-${project.status}">${project.statusText}</span>
+                        <p class="project-card-description">${project.description}</p>
+                        <button class="view-btn">View Project</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Show project detail
+        function showProjectDetail(projectId) {
+            const project = projects.find(p => p.id === projectId);
+            if (!project) return;
+
+            const detailContent = document.getElementById('projectDetailContent');
+            detailContent.innerHTML = `
+                <div class="detail-header">
+                    <span class="detail-icon">${project.icon}</span>
+                    <div class="detail-title">
+                        <h2>${project.title}</h2>
+                        <span class="project-status status-${project.status}">${project.statusText}</span>
+                    </div>
+                </div>
+
+                <img src="${project.mainImage}" alt="${project.title}" class="detail-main-image">
+
+                <div class="info-grid">
+                    <div class="info-box">
+                        <div class="info-box-label">Client</div>
+                        <div class="info-box-value">${project.client}</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="info-box-label">Start Date</div>
+                        <div class="info-box-value">${project.startDate}</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="info-box-label">Duration</div>
+                        <div class="info-box-value">${project.duration}</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="info-box-label">Budget</div>
+                        <div class="info-box-value">${project.budget}</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="info-box-label">Team Size</div>
+                        <div class="info-box-value">${project.team}</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="info-box-label">Technologies</div>
+                        <div class="info-box-value">${project.technologies}</div>
+                    </div>
+                </div>
+
+                <div class="detail-info">
+                    <div class="info-section">
+                        <h3>Project Overview</h3>
+                        <p>${project.fullDescription}</p>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <h3>Project Gallery</h3>
+                    <div class="image-gallery">
+                        ${project.images.map(img => `
+                            <div class="gallery-item">
+                                <img src="${img.url}" alt="${img.label}">
+                                <div class="gallery-label">${img.label}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('projectListView').classList.add('hidden');
+            document.getElementById('projectDetailView').classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        // Show project list
+        function showProjectList() {
+            document.getElementById('projectListView').classList.remove('hidden');
+            document.getElementById('projectDetailView').classList.remove('active');
+            window.scrollTo(0, 0);
+        }
+
+        // Initialize
+        renderProjectList();
+    </script>
+</body>
+</html>
